@@ -3,7 +3,9 @@
     <words>
       <w>allownone</w>
       <w>kivy</w>
+      <w>multiselect</w>
       <w>rgba</w>
+      <w>txtinput</w>
     </words>
   </dictionary>
 </component>
