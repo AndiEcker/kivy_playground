@@ -38,12 +38,14 @@
             size_hint: 1, None
             size_hint_y: None
             height: 25
-            cols: 4
+            cols: 5
 
             Label:
-                text: "Name"
+                text: "ROWID"
             Label:
                 text: "ID"
+            Label:
+                text: "Name"
             Label:
                 text: "CB Time"
             Label:
@@ -53,10 +55,10 @@
             RecycleView:
                 id: rec_view
                 viewclass: 'SelectableButton'
-                data: [{'text': str(x), 'row_id': int(i / 4), 'col_id': i % 4} for i, x in enumerate(root.data_items)]
+                data: [{'text': str(x), 'row_id': int(i / 5), 'col_id': i % 5} for i, x in enumerate(root.data_items)]
                 #data: root.data_items
                 SelectableRecycleGridLayout:
-                    cols: 4
+                    cols: 5
                     default_size: None, dp(26)
                     default_size_hint: 1, None
                     size_hint_y: None

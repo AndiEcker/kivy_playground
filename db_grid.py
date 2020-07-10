@@ -1,5 +1,4 @@
 """ display and update data from sqlite db in a kivy RecycleView """
-import os
 import sqlite3
 
 from kivy.app import App
@@ -15,17 +14,16 @@ from kivy.uix.popup import Popup
 
 connection = sqlite3.connect("demo.db")
 cursor = connection.cursor()
-cursor.execute("CREATE TABLE IF NOT EXISTS Callbacks(cID INT PRIMARY KEY, cName TEXT, cbTime INT, cbRems TEXT)")
-cursor.execute("SELECT * FROM Callbacks ORDER BY ROWID DESC")
+cursor.execute("CREATE TABLE IF NOT EXISTS Callbacks(cID INT, cName TEXT, cbTime INT, cbRems TEXT)")
+cursor.execute("SELECT * FROM Callbacks")
 loaded_db_rows = cursor.fetchall()
-
 if not loaded_db_rows:
     cursor.execute("INSERT INTO Callbacks VALUES ('1','Client1','1500','Test1')")
     cursor.execute("INSERT INTO Callbacks VALUES ('2','Client2','1600','Test2')")
     cursor.execute("INSERT INTO Callbacks VALUES ('3','Client3','1700','Test3')")
     connection.commit()
-    cursor.execute("SELECT * FROM Callbacks ORDER BY ROWID DESC")
-    loaded_db_rows = cursor.fetchall()
+cursor.execute("SELECT ROWID, * FROM Callbacks ORDER BY ROWID DESC")
+loaded_db_rows = cursor.fetchall()
 
 
 class TextInputPopup(Popup):
@@ -78,15 +76,18 @@ class SelectableButton(RecycleDataViewBehavior, Button):
     def update_changes(self, idx, txt):
         """ update user changes from popup in grid and db """
         self.text = txt
-        grid_row = int(idx / 4)
+        grid_row = int(idx / 5)
+        grid_col = idx % 5
         rv_data = self.r_v.data
         assert rv_data[idx]['row_id'] == grid_row
-        db_id = rv_data[grid_row * 4]['text']
-        col_name = ['cID', 'cName', 'cbTime', 'cbRems'][idx % 4]
+        assert rv_data[idx]['col_id'] == grid_col
+
+        db_id = rv_data[grid_row * 5]['text']
+        col_name = ['ROWID', 'cID', 'cName', 'cbTime', 'cbRems'][grid_col]
         # noinspection SqlInjection
-        cursor.execute(f"UPDATE Callbacks SET {col_name} = '{txt}' WHERE cID = {db_id}")
+        cursor.execute(f"UPDATE Callbacks SET {col_name} = '{txt}' WHERE ROWID = {db_id}")
         connection.commit()
-        print(f"Changed column value to '{txt}' in grid_row=={grid_row} for item {idx} and db primary key {db_id}")
+        print(f"Changed {col_name} value to '{txt}' in grid_row=={grid_row} with db ROWID of {db_id}")
 
 
 class RV(BoxLayout):
@@ -99,16 +100,15 @@ class RV(BoxLayout):
         self.get_users()
 
     def get_users(self):
-        """ load user data into data_items attribute AE: cID should be the primary key of the Callbacks table """
+        """ load user data into data_items attribute """
 
-        # create data_items
         for row in loaded_db_rows:
             for col in row:
                 self.data_items.append(col)
 
         print("data_items ROWS")
         for row_num in range(len(loaded_db_rows)):
-            print(self.data_items[row_num * 4: row_num * 4 + 4])
+            print(self.data_items[row_num * 5: row_num * 5 + 5])
         print("RecycleView data")
         rv = self.ids.rec_view
         for col_num, col_data in enumerate(rv.data):
