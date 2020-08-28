@@ -13,11 +13,11 @@ from kivy.lang import Builder
 # from kivy.event import Observable
 from kivy.lang import Observable
 
-from ae.i18n import loaded_languages, default_language, get_f_string
+from ae.i18n import LOADED_LANGUAGES, default_language, get_f_string
 
 
-loaded_languages['es_ES'] = dict(trans_text='txt par tra')
-loaded_languages['de_DE'] = dict(trans_text='Txt ZUM übe')
+LOADED_LANGUAGES['es_ES'] = dict(trans_text='txt par tra')
+LOADED_LANGUAGES['de_DE'] = dict(trans_text='Txt ZUM übe')
 
 
 # class LangBinderBase(Observable):
