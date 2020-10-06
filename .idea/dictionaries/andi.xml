@@ -6,10 +6,15 @@
       <w>fbind</w>
       <w>funbind</w>
       <w>garbus</w>
+      <w>halign</w>
       <w>kivy</w>
       <w>multiselect</w>
+      <w>recycleview</w>
       <w>rgba</w>
+      <w>textinput</w>
       <w>txtinput</w>
+      <w>unfocus</w>
+      <w>viewclass</w>
     </words>
   </dictionary>
 </component>
