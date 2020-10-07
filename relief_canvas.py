@@ -8,9 +8,10 @@ from kivy.lang import Builder
 from kivy.properties import NumericProperty, ObjectProperty
 from kivy.uix.label import Label
 from kivy.uix.button import Button
-
-from ae.kivy_app import FlowButton, FlowToggler, KivyMainApp
 from kivy.uix.widget import Widget
+
+from ae.gui_app import id_of_flow
+from ae.kivy_app import FlowButton, FlowToggler, KivyMainApp
 
 
 DEF_NUM_PROP_VAL = "99px"
@@ -390,7 +391,7 @@ if __name__ == '__main__':
         id: col_pic
         size_hint_y: None
         height: self.width
-        on_color: print("PIC changed", args)
+        on_color: app.main_app.debug_print("PIC changed", args)
 
 """)
 
@@ -418,15 +419,23 @@ if __name__ == '__main__':
                 return DEF_NUM_PROP_VAL
             return num_prop_value
 
+        def debug_print(self, *args, **kwargs):
+            """ added to find out why the color got lightened when opening color picker dropdown. """
+            print("APP_DEBUG_PRINT", args, kwargs)
+
         def toggle_color_picker(self, wid, color_name='square_fill_ink'):
             """ show or hide color picker"""
             print("TOGGLE COLOR PICKER", getattr(wid, color_name), self.color_picker)
+            is_open = self.color_dropdown and self.color_dropdown.attach_to
+            if is_open:
+                self.color_dropdown.dismiss()
             if self.color_dropdown:
                 self.color_picker.unbind(color=wid.setter(color_name))
                 self.color_picker = None
                 self.color_dropdown = None
-            else:
+            if not is_open:
                 self.color_dropdown = Factory.ColorPickerDD()
+                self.change_flow(id_of_flow('suggest'))
                 self.color_dropdown.open(wid)
                 self.color_picker = self.color_dropdown.ids.col_pic
                 self.color_picker.color = getattr(wid, color_name)
