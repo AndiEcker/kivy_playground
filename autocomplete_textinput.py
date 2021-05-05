@@ -44,7 +44,8 @@ class AcTextInput(ReliefCanvas, TextInput):
         chi[idx].square_fill_ink = Window.clearcolor
         self._matching_ac_index = (idx + delta + cnt) % cnt
         chi[self._matching_ac_index].square_fill_ink = self.auto_complete_selector_index_ink
-        self.suggestion_text = self._matching_ac_texts[self._matching_ac_index][len(self.text):]
+        # suggestion_text will be removed in Kivy 2.1.0 - see PR #7437
+        # self.suggestion_text = self._matching_ac_texts[self._matching_ac_index][len(self.text):]
 
     def keyboard_on_key_down(self, keyboard: Any, keycode: Tuple[int, str], text: str, modifiers: List[str]) -> bool:
         """ overwritten TextInput/FocusBehavior kbd event handler.
@@ -57,6 +58,7 @@ class AcTextInput(ReliefCanvas, TextInput):
         """
         if self._ac_dropdown.attach_to:
             if keycode[1] in ('enter', 'right'):
+                # suggestion_text will be removed in Kivy 2.1.0 - see PR #7437
                 # self.suggestion_text will be reset to "" by TextInput instance
                 self.text = self._matching_ac_texts[self._matching_ac_index]
                 self._ac_dropdown.dismiss()
@@ -103,7 +105,8 @@ class AcTextInput(ReliefCanvas, TextInput):
                 App.get_running_app().main_app.change_flow(replace_flow_action(self.focus_flow_id, 'suggest'))
                 self._ac_dropdown.open(self)
             self._change_selector_index(0)
-            self.suggestion_text = matching[self._matching_ac_index][len(self.text):]
+            # suggestion_text will be removed in Kivy 2.1.0 - see PR #7437
+            # self.suggestion_text = matching[self._matching_ac_index][len(self.text):]
         elif self._ac_dropdown.attach_to:
             self._ac_dropdown.dismiss()
 
